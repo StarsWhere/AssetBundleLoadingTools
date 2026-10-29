@@ -1,4 +1,4 @@
-﻿using HarmonyLib;
+using HarmonyLib;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Emit;
@@ -11,16 +11,15 @@ namespace AssetBundleLoadingTools.Patches
     /// <summary>
     /// This patch makes base game mirrors work properly when the stereo rendering mode is multi-pass.
     /// </summary>
-    [HarmonyPatch(typeof(MirrorRendererSO))]
     internal class MirrorRendererSOMultiPass
     {
         private static readonly MethodInfo XRSettingsGetStereoRenderingMode = AccessTools.DeclaredPropertyGetter(typeof(XRSettings), nameof(XRSettings.stereoRenderingMode));
         private static readonly MethodInfo CameraGetStereoEnabled = AccessTools.DeclaredPropertyGetter(typeof(Camera), nameof(Camera.stereoEnabled));
         private static readonly MethodInfo TransformGetPosition = AccessTools.DeclaredPropertyGetter(typeof(Transform), nameof(Transform.position));
         private static readonly MethodInfo GetCameraPositionMethod = AccessTools.DeclaredMethod(typeof(MirrorRendererSOMultiPass), nameof(GetCameraPosition));
-        private static readonly FieldInfo StereoTextureWidthField = AccessTools.DeclaredField(typeof(MirrorRendererSO), nameof(MirrorRendererSO._stereoTextureWidth));
+        private static readonly FieldInfo StereoTextureWidthField = AccessTools.DeclaredField(typeof(MirrorRendererSO), "_stereoTextureWidth");
 
-        [HarmonyPatch(nameof(MirrorRendererSO.RenderMirrorTexture))]
+        [HarmonyPatch("RenderMirrorTexture")]
         [HarmonyTranspiler]
         public static IEnumerable<CodeInstruction> RenderMirrorTextureTranspiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
