@@ -396,3 +396,14 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+
+# Local compatibility build inputs and outputs
+/.tmp/
+/releases/
+**/bin/
+**/obj/
+**/__pycache__/
+/Beat Saber_Data/
+/UserData/
+/Plugins/
+/Libs/
