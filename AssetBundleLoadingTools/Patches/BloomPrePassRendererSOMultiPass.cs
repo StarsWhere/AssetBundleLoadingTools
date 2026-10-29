@@ -1,4 +1,4 @@
-﻿using HarmonyLib;
+using HarmonyLib;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Emit;
@@ -7,7 +7,7 @@ using UnityEngine.XR;
 
 namespace AssetBundleLoadingTools.Patches
 {
-    [HarmonyPatch(typeof(BloomPrePassRendererSO), nameof(BloomPrePassRendererSO.GetCameraParams))]
+    [HarmonyPatch(typeof(BloomPrePassRendererSO), nameof(BloomPrePassRendererSO.GetCameraParams), new[] { typeof(Camera), typeof(Matrix4x4), typeof(Matrix4x4), typeof(Vector4) }, new[] { ArgumentType.Normal, ArgumentType.Ref, ArgumentType.Ref, ArgumentType.Ref })]
     internal class BloomPrePassRendererSOMultiPass
     {
         private static readonly MethodInfo CameraGetStereoEnabled = AccessTools.DeclaredPropertyGetter(typeof(Camera), nameof(Camera.stereoEnabled));
@@ -21,7 +21,7 @@ namespace AssetBundleLoadingTools.Patches
                 // make the if statement take into account multi pass
                 // if (camera.stereoEnabled && XRSettings.stereoRenderingMode != StereoRenderingMode.MultiPass)
                 .MatchForward(true,
-                    new CodeMatch(OpCodes.Ldarg_1),
+                    new CodeMatch(OpCodes.Ldarg_0),
                     new CodeMatch(i => i.Calls(CameraGetStereoEnabled)),
                     new CodeMatch(i => i.opcode == OpCodes.Brfalse && i.Branches(out stereoNotEnabledLabel))) // bool stereoEnabled
                 .ThrowIfInvalid("if (camera.stereoEnabled) not found")
